@@ -1,6 +1,8 @@
 
 // process for the exiting file update in the github
 
+//    git branch -m master main     to shift the branch
+
 git add "Notes/Intinal_Exaplination.tmdx"
 git commit -m "Updated myfile.txt"
 git push origin main
