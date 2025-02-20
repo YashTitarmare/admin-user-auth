@@ -44,7 +44,7 @@ mongoose.connect("mongodb://127.0.0.1:27017/userDB", {
   userSchema.index({ name: 1 }, { unique: true });
  
 
-  const User = mongoose.model("User", userSchema);
+const User = mongoose.model("User", userSchema);
  
 
 // alreay hte ADMIN DATA
