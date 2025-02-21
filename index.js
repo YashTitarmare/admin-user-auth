@@ -114,6 +114,11 @@ app.get("/admin/users", (req, res) => {
 
 */
 
+app.get("/users",(req,res)=>){
+  // Here adding the user can see only the ours data 
+}
+
+
 app.get("/admin/users", (req, res) => {
   const authHeader = req.headers.authorization;
   
