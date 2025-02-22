@@ -171,6 +171,6 @@ app.get("/admin/user-count", async (req, res) => {
     res.status(500).json({ error: "Server error" });
   }
 });
-
+app.get("/admin/user-count", async (req, res) => {}) // adding total complete for today
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
