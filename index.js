@@ -50,7 +50,7 @@ const User = mongoose.model("User", userSchema);
 // alreay hte ADMIN DATA
 const ADMIN_CREDENTIALS = { email: "admin@example.com", password: "admin123" };
 
-// user restiom
+// user register
 app.post("/register", async (req, res) => {
   const { name, email, password } = req.body;
 
@@ -60,6 +60,19 @@ app.post("/register", async (req, res) => {
   await newUser.save();
   res.json({ message: "User registered successfully" });
 });
+
+// User login 
+app.post("/login", async (req, res) => {
+// geting the register data  for mongodb and matching the login current data and the register 
+// if true then only move forworad 
+
+});
+
+
+
+
+
+
 
 //admin Login
 app.post("/admin/login", (req, res) => {
@@ -114,10 +127,14 @@ app.get("/admin/users", (req, res) => {
 
 */
 
-app.get("/users",(req,res)=>){
+app.get("/users",(req,res)=>{
   // Here adding the user can see only the ours data 
-}
+})
 
+app.get("/users/login/data",(req,res)=>{
+  // add the three rotous in the for user one is for login got storing the data and check the id 
+  // after its done(Id pass is correct then ) user can see the data of your self 
+})
 
 app.get("/admin/users", (req, res) => {
   const authHeader = req.headers.authorization;
