@@ -65,6 +65,12 @@ app.post("/register", async (req, res) => {
 app.post("/login", async (req, res) => {
 // geting the register data  for mongodb and matching the login current data and the register 
 // if true then only move forworad 
+const { email, password } = req.body;
+if(email==='yash'&& password===123){  // === Strict Equality  == is alos equality but loss
+  User.find().then((users) => res.json(users));
+    } else {
+      res.status(403).json({ error: "Unauthorized" });
+}
 
 });
 
