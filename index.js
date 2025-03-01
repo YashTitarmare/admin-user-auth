@@ -80,6 +80,8 @@ if(email==='yash'&& password===123){  // === Strict Equality  == is alos equalit
 
 
 
+
+
 //admin Login
 app.post("/admin/login", (req, res) => {
   const { email, password } = req.body; // exteacting the emil and password for the request body
