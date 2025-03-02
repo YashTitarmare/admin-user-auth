@@ -36,19 +36,45 @@ mongoose.connect("mongodb://127.0.0.1:27017/userDB", {
     name: { type: String, required: true, unique: true },  
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true }
-  });
-  
+  }, { versionKey: false }); // for the __v remove 
 
+  const adminSchema = new mongoose.Schema({
+    sname: { type: String, required: true, unique: true },  
+    email: { type: String, required: true, unique: true },
+    password: { type: String, required: true }
+  })  
 
+  /*  const userSchema = new mongoose.Schema({
+    name: { type: String, required: true, unique: true },  
+    email: { type: String, required: true, unique: true },
+    password: { type: String, required: true }
+  }); 
+*/
 
   userSchema.index({ name: 1 }, { unique: true });
  
 
 const User = mongoose.model("User", userSchema);
+
+const AdminDB = mongoose.model("AdminDB", adminSchema);
+
  
 
 // alreay hte ADMIN DATA
-const ADMIN_CREDENTIALS = { email: "admin@example.com", password: "admin123" };
+// const ADMIN_CREDENTIALS = { email: "admin@example.com", password: "admin123" };
+
+app.post("/admin/register", async (req, res) => {
+  const { sname, email, password } = req.body;
+
+  const hashedPassword = await bcrypt.hash(password, 10);
+  const newUser = new AdminDB({ sname, email, password: hashedPassword });
+
+  await newUser.save();
+  res.json({ message: "Admin registered successfully" });
+});
+
+
+
 
 // user register
 app.post("/register", async (req, res) => {
