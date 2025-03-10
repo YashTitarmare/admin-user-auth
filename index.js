@@ -78,6 +78,24 @@ app.post("/admin/register", async (req, res) => {
 
 
 //admin Login
+app.post("/admin/login", async (req, res) => {
+  const { email, password } = req.body;
+  const admin = await AdminDB.findOne({ email });
+  if (!admin) {
+    return res.status(401).json({ error: "Invalid credentials" });
+  }
+
+
+  const isMatch = await bcrypt.compare(password, admin.password);
+  if (!isMatch) {
+    return res.status(401).json({ error: "Invalid credentials" });
+  }
+
+// jwt token greanaation
+  const token = jwt.sign({ role: "admin", email: admin.email }, jwtSecret, { expiresIn: "1h" });
+
+  res.json({ message: "Login successful", token });
+});
 
 
 
@@ -96,6 +114,27 @@ app.post("/register", async (req, res) => {
 });
 
 
+// User login 
+app.post("/login", async (req, res) => {
+  const { email, password } = req.body;
+
+  // Find user in database
+  const user = await User.findOne({ email });
+  if (!user) {
+    return res.status(403).json({ error: "Unauthorized" });
+  }
+
+  // Compare hashed password
+  const isMatch = await bcrypt.compare(password, user.password);
+  if (!isMatch) {
+    return res.status(403).json({ error: "Unauthorized" });
+  }
+
+  // Generate JWT token
+  const token = jwt.sign({ role: "user", email: user.email }, jwtSecret, { expiresIn: "1h" });
+
+  res.json({ message: "Login successful", token });
+});
 
 
 
@@ -113,3 +152,32 @@ app.post("/register", async (req, res) => {
 
 
 // admin see the user data
+
+/* Old
+app.get("/admin/users", (req, res) => {
+  const token = req.headers.authorization?.split(" ")[1]; // Extract the token
+
+  //const token = req.headers.authorization;
+
+  if (!token) return res.status(403).json({ error: "Access Denied" });
+
+  try {
+    //const verified = jwt.verify(token, JWT_SECRET);
+    const verified = jwt.verify(token, jwtSecret);
+    
+    if (verified.role === "admin") {
+      User.find().then((users) => res.json(users));
+    } else {
+      res.status(403).json({ error: "Unauthorized" });
+    }
+  } catch (error) {
+    res.status(400).json({ error: "Invalid Token" });
+  }
+});
+*/
+
+
+
+
+
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
