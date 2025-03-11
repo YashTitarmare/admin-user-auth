@@ -102,6 +102,9 @@ app.post("/admin/login", async (req, res) => {
 
 
 
+
+
+
 // user register
 app.post("/register", async (req, res) => {
   const { name, email, password } = req.body;
@@ -138,8 +141,35 @@ app.post("/login", async (req, res) => {
 
 
 
+// for admin to see the user enter data in the resister only for 
+// Only  one admin ---- Multpies user 
 
+// Without middleware 
 
+app.get("/admin/users", async (req, res) => {
+  const token = req.header("Authorization")?.split(" ")[1];
+
+  if (!token) {
+    return res.status(403).json({ error: "Access denied. No token provided." });
+  }
+
+  try {
+    console.log("Received Token:", token);
+    const decoded = jwt.verify(token, jwtSecret);
+    console.log("Decoded Token:", decoded);
+
+    if (decoded.role !== "admin") {
+      return res.status(403).json({ error: "Access denied. Admins only." });
+    }
+
+    const users = await User.find({}, { password: 0 });
+    res.json({ users });
+
+  } catch (error) {
+    console.error("JWT Verification Error:", error.message);
+    res.status(401).json({ error: "Invalid token." });
+  }
+});
 
 
 
@@ -175,6 +205,20 @@ app.get("/admin/users", (req, res) => {
   }
 });
 */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
