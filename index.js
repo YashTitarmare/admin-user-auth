@@ -234,6 +234,34 @@ mongoose.connect("mongodb://127.0.0.1:27017/userDB", {
 
 /* Dashboard end */
 
+/* Dashboardfor  geting the shop name and date with post reqeust  */
+
+const dashboardSchema = new mongoose.Schema({
+  shopName: String,
+  date: Date,
+});
+
+
+const Dashboard = mongoose.model("Dashboard", dashboardSchema);
+
+app.post("/dashboard", async (req, res) => {
+  const { shopName, date } = req.body;
+
+  if (!shopName || !date) {
+    return res.status(400).json({ error: "Shop name and date are required" });
+  }
+
+  try {
+    const newEntry = new Dashboard({ shopName, date });
+    await newEntry.save();
+    res.json({ message: " entry saved successfully", data: newEntry });
+  } catch (error) {
+    res.status(500).json({ error: " Server Error" });
+  }
+});
+
+/* Dashboard post nd   */
+
 
 app.get("/dashboard", async (req, res) => {
   const token = req.header("Authorization")?.split(" ")[1]; 
