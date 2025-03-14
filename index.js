@@ -131,12 +131,17 @@ app.post("/login", async (req, res) => {
   const isMatch = await bcrypt.compare(password, user.password);
   if (!isMatch) {
     return res.status(403).json({ error: "Unauthorized" });
+
   }
 
   // Generate JWT token
   const token = jwt.sign({ role: "user", email: user.email }, jwtSecret, { expiresIn: "1h" });
 
   res.json({ message: "Login successful", token });
+
+
+
+
 });
 
 
@@ -208,6 +213,45 @@ app.get("/admin/users", (req, res) => {
 
 
 
+/*  Connect for dashboard */
+
+/*app.get("/dashboard", (req, res) => {
+  res.json({
+    message: "Welcome to the Dashboard",
+    user: req.user, // Show logged-in user details
+  });
+});
+
+
+mongoose.connect("mongodb://127.0.0.1:27017/userDB", {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+}).then(() => {
+  console.log("MongoDB Connected");
+});
+
+*/
+
+/* Dashboard end */
+
+
+app.get("/dashboard", async (req, res) => {
+  const token = req.header("Authorization")?.split(" ")[1]; 
+
+  if (!token) {
+    return res.status(403).json({ error: "Access denied. No token provided." });
+  }
+
+  try {
+    const decoded = jwt.verify(token, jwtSecret); 
+    res.json({
+      message: "Welcome to the Dashboard",
+      user: decoded, // show all login deatils 
+    });
+  } catch (error) {
+    res.status(401).json({ error: "Invalid token." });
+  }
+});
 
 
 
