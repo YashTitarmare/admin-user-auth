@@ -284,7 +284,30 @@ app.get("/dashboard", async (req, res) => {
 
 
 
+app.get("/users/booking-data", async (req, res) => {
+  const token = req.header("Authorization")?.split(" ")[1];
 
+  if (!token) {
+    return res.status(403).json({ error: "Access denied. No token provided." });
+  }
+
+  try {
+    console.log("Received Token:", token);
+    const decoded = jwt.verify(token, jwtSecret);
+    console.log("Decoded Token:", decoded);
+
+    if (decoded.role !== "admin") {
+      return res.status(403).json({ error: "Access denied. Admins only." });
+    }
+
+    const users = await Dashboard.find({}, { password: 0 });
+    res.json({ users });
+
+  } catch (error) {
+    console.error("JWT Verification Error:", error.message);
+    res.status(401).json({ error: "Invalid token." });
+  }
+});
 
 
 
