@@ -236,31 +236,116 @@ mongoose.connect("mongodb://127.0.0.1:27017/userDB", {
 
 /* Dashboardfor  geting the shop name and date with post reqeust  */
 
+
+
+
+
+
+
+
+
+
 const dashboardSchema = new mongoose.Schema({
   shopName: String,
   date: Date,
+  your_time: String,
+});
+
+const Dashboard = mongoose.model("Dashboard", dashboardSchema);
+
+app.post("/dashboard", async (req, res) => {
+  try {
+    const { shopName, date } = req.body; 
+
+    if (!shopName || !date) {
+      return res.status(400).json({ error: "Shop name and date are required" });
+    }
+
+    let your_time = "10"; // here we apply the logic for the give the time for the user (logic code )
+
+    const count = await Dashboard.countDocuments();  
+
+    if (count == 5) {
+      your_time = "25"; // check the if the count 5 means the taotal count is 5 then the 5 is tthe 25 otherwisie is 10 
+    }
+
+    const newEntry = new Dashboard({ shopName, date, your_time }); // Used `your_time` instead of `your_time` from request.
+    await newEntry.save();
+
+    res.json({ message: "Entry saved successfully", data: newEntry });
+  } catch (error) {
+    console.error("Server Error:", error); // Added console log to debug errors.
+    res.status(500).json({ error: "Server Error" });
+  }
+});
+
+
+/*
+
+const dashboardSchema = new mongoose.Schema({
+  shopName: String,
+  date: Date,
+  your_time:String,
 });
 
 
 const Dashboard = mongoose.model("Dashboard", dashboardSchema);
 
 app.post("/dashboard", async (req, res) => {
-  const { shopName, date } = req.body;
+  const { shopName, date,your_time} = req.body;
 
   if (!shopName || !date) {
     return res.status(400).json({ error: "Shop name and date are required" });
   }
+  if (db.dashboards.count()==5){
+    your_time='20',
+  }
 
   try {
-    const newEntry = new Dashboard({ shopName, date });
+    const count = await Dashboard.countDocuments();  // Get the total count of documents
+
+    if (count == 5) {
+      your_time = "20";  // Corrected assignment
+    }
+    const newEntry = new Dashboard({ shopName, date,your_time });
     await newEntry.save();
     res.json({ message: " entry saved successfully", data: newEntry });
   } catch (error) {
     res.status(500).json({ error: " Server Error" });
   }
-});
+}); 
+
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Start Server
+
 
 /* Dashboard post nd   */
+// seting the   ID   filed in the dashboard with nature number  1 to infite   if the 1  then the fist time slot is give to  ID 1   user like 10:am the ID with 2   get 10:10 am 
+
 
 
 app.get("/dashboard", async (req, res) => {
